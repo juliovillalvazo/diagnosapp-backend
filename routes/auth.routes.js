@@ -251,7 +251,7 @@ router.post('/login', (req, res, next) => {
 });
 
 router.post(
-    '/patient/upload/:id',
+    '/upload/:id',
     fileUploader.single('profilePicture'),
     async (req, res, next) => {
         try {
@@ -265,6 +265,83 @@ router.post(
         }
     }
 );
+
+router.put('/users/:id/edit', isAuthenticated, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { type, firstName, lastName, email, profilePicture } = req.body;
+        if (type === 'doctor') {
+            const updatedDoctor = await Doctor.findByIdAndUpdate(
+                id,
+                { firstName, lastName, email, profilePicture },
+                { new: true }
+            ).populate('specialty');
+            // Deconstruct the user object to omit the password
+            const { _id, specialty } = updatedDoctor;
+
+            // Create an object that will be set as the token payload
+            const payload = {
+                _id,
+                email,
+                firstName,
+                lastName,
+                type,
+                profilePicture,
+                specialty: specialty.name,
+            };
+            const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+                algorithm: 'HS256',
+                expiresIn: '6h',
+            });
+            res.status(201).json({ ...updatedDoctor, authToken });
+        } else {
+            const updatedPatient = await Patient.findByIdAndUpdate(
+                id,
+                { firstName, lastName, email, profilePicture },
+                { new: true }
+            );
+            // Deconstruct the user object to omit the password
+            const { _id } = updatedPatient;
+
+            // Create an object that will be set as the token payload
+            const payload = {
+                _id,
+                email,
+                firstName,
+                lastName,
+                type,
+                profilePicture,
+            };
+            const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
+                algorithm: 'HS256',
+                expiresIn: '6h',
+            });
+            res.status(201).json({ ...updatedPatient, authToken });
+        }
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/doctors/:id', isAuthenticated, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const foundDoctor = await Doctor.findById(id);
+        res.json(foundDoctor);
+    } catch (err) {
+        next(err);
+    }
+});
+
+router.get('/patients/:id', isAuthenticated, async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const foundPatient = await Patient.findById(id);
+        res.json(foundPatient);
+    } catch (err) {
+        next(err);
+    }
+});
 
 // GET  /auth/verify  -  Used to verify JWT stored on the client
 router.get('/verify', isAuthenticated, (req, res, next) => {
