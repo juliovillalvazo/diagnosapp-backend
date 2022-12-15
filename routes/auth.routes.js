@@ -323,10 +323,10 @@ router.put('/users/:id/edit', isAuthenticated, async (req, res, next) => {
     }
 });
 
-router.get('/doctors/:id', isAuthenticated, async (req, res, next) => {
+router.get('/doctors/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const foundDoctor = await Doctor.findById(id);
+        const foundDoctor = await Doctor.findById(id).populate('specialty');
         res.json(foundDoctor);
     } catch (err) {
         next(err);

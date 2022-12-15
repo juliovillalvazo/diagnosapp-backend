@@ -27,6 +27,9 @@ app.use('/api', specialtiesRoutes);
 const searchRoutes = require('./routes/search.routes');
 app.use('/api/search', searchRoutes);
 
+const scheduleRoutes = require('./routes/scheduleAppointment.routes');
+app.use('/api', scheduleRoutes);
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);
 

@@ -34,6 +34,12 @@ const doctorSchema = new Schema(
             default:
                 'https://directory.wkhs.com/sites/default/files/hg-features/hg-providers/default-neutral.jpg',
         },
+        appointments: [
+            {
+                type: Schema.Types.ObjectId,
+                ref: 'Appointment',
+            },
+        ],
     },
     {
         // this second object adds extra properties: `createdAt` and `updatedAt`
