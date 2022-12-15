@@ -16,10 +16,12 @@ const doctorSchema = new Schema(
         },
         firstName: {
             type: String,
+            lowercase: true,
             required: [true, 'first name is required.'],
         },
         lastName: {
             type: String,
+            lowercase: true,
             required: [true, 'last name is required.'],
         },
         specialty: {
