@@ -326,8 +326,32 @@ router.put('/users/:id/edit', isAuthenticated, async (req, res, next) => {
 router.get('/doctors/:id', async (req, res, next) => {
     try {
         const { id } = req.params;
-        const foundDoctor = await Doctor.findById(id).populate('specialty');
-        res.json(foundDoctor);
+        const {
+            _id,
+            appointments,
+            email,
+            firstName,
+            lastName,
+            profilePicture,
+            specialty,
+        } = await Doctor.findById(id)
+            .populate('specialty appointments')
+            .populate({
+                path: 'appointments',
+                populate: {
+                    path: 'patient',
+                    model: 'Patient',
+                },
+            });
+        res.json({
+            _id,
+            appointments,
+            email,
+            firstName,
+            lastName,
+            profilePicture,
+            specialty,
+        });
     } catch (err) {
         next(err);
     }
@@ -336,8 +360,30 @@ router.get('/doctors/:id', async (req, res, next) => {
 router.get('/patients/:id', isAuthenticated, async (req, res, next) => {
     try {
         const { id } = req.params;
-        const foundPatient = await Patient.findById(id);
-        res.json(foundPatient);
+        const {
+            _id,
+            appointments,
+            email,
+            firstName,
+            lastName,
+            profilePicture,
+        } = await Patient.findById(id)
+            .populate('appointments')
+            .populate({
+                path: 'appointments',
+                populate: {
+                    path: 'doctor',
+                    model: 'Doctor',
+                },
+            });
+        res.json({
+            _id,
+            appointments,
+            email,
+            firstName,
+            lastName,
+            profilePicture,
+        });
     } catch (err) {
         next(err);
     }

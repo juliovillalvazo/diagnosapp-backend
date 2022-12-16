@@ -40,6 +40,7 @@ const doctorSchema = new Schema(
                 ref: 'Appointment',
             },
         ],
+        description: { type: String, default: 'this is my public profile' },
     },
     {
         // this second object adds extra properties: `createdAt` and `updatedAt`
