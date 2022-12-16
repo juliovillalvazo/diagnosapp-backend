@@ -334,6 +334,7 @@ router.get('/doctors/:id', async (req, res, next) => {
             lastName,
             profilePicture,
             specialty,
+            description,
         } = await Doctor.findById(id)
             .populate('specialty appointments')
             .populate({
@@ -351,6 +352,7 @@ router.get('/doctors/:id', async (req, res, next) => {
             lastName,
             profilePicture,
             specialty,
+            description,
         });
     } catch (err) {
         next(err);

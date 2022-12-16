@@ -41,6 +41,7 @@ const doctorSchema = new Schema(
             },
         ],
         description: { type: String, default: 'this is my public profile' },
+        reviews: [{ type: Schema.Types.ObjectId, ref: 'Review' }],
     },
     {
         // this second object adds extra properties: `createdAt` and `updatedAt`
