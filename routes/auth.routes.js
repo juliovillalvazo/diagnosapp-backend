@@ -215,6 +215,7 @@ router.post('/login', (req, res, next) => {
                         lastName,
                         profilePicture,
                         specialty,
+                        description,
                     } = foundUser;
 
                     // Create an object that will be set as the token payload
@@ -226,6 +227,7 @@ router.post('/login', (req, res, next) => {
                         type,
                         profilePicture,
                         specialty: specialty.name,
+                        description,
                     };
 
                     // Create a JSON Web Token and sign it
@@ -271,9 +273,10 @@ router.put('/users/:id/edit', isAuthenticated, async (req, res, next) => {
         const { id } = req.params;
         const { type, firstName, lastName, email, profilePicture } = req.body;
         if (type === 'doctor') {
+            const { description } = req.body;
             const updatedDoctor = await Doctor.findByIdAndUpdate(
                 id,
-                { firstName, lastName, email, profilePicture },
+                { firstName, lastName, email, profilePicture, description },
                 { new: true }
             ).populate('specialty');
             // Deconstruct the user object to omit the password
@@ -288,6 +291,7 @@ router.put('/users/:id/edit', isAuthenticated, async (req, res, next) => {
                 type,
                 profilePicture,
                 specialty: specialty.name,
+                description,
             };
             const authToken = jwt.sign(payload, process.env.TOKEN_SECRET, {
                 algorithm: 'HS256',
