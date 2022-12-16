@@ -31,6 +31,8 @@ router.get(
             await Doctor.findByIdAndUpdate(id, {
                 $pull: { reviews: idReview },
             });
+
+            res.send(200);
         } catch (err) {
             next(err);
         }

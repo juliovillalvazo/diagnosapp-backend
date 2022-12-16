@@ -335,12 +335,20 @@ router.get('/doctors/:id', async (req, res, next) => {
             profilePicture,
             specialty,
             description,
+            reviews,
         } = await Doctor.findById(id)
-            .populate('specialty appointments')
+            .populate('specialty reviews appointments')
             .populate({
                 path: 'appointments',
                 populate: {
                     path: 'patient',
+                    model: 'Patient',
+                },
+            })
+            .populate({
+                path: 'reviews',
+                populate: {
+                    path: 'author',
                     model: 'Patient',
                 },
             });
@@ -353,6 +361,7 @@ router.get('/doctors/:id', async (req, res, next) => {
             profilePicture,
             specialty,
             description,
+            reviews,
         });
     } catch (err) {
         next(err);
